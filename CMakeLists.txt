@@ -164,6 +164,7 @@ ADD_CUSTOM_COMMAND(TARGET revisiontag COMMAND ${CMAKE_COMMAND}
 set(
 domoticz_SRCS
 main/stdafx.cpp
+hardware/NestApi.cpp
 main/CmdLine.cpp
 main/Camera.cpp
 main/domoticz.cpp
