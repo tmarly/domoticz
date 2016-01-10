@@ -1058,6 +1058,15 @@ namespace http {
 					)
 					return;
 			}
+			else if (htype == HTYPE_NestApi)
+			{
+				// we will store the thermostat ID / token in login / password
+				if (
+					(username == "") ||
+					(password == "")
+					)
+					return;
+			}
 			else if (htype == HTYPE_SolarEdgeAPI)
 			{
 				if (
@@ -1281,6 +1290,15 @@ namespace http {
 				(htype == HTYPE_Netatmo)
 				)
 			{
+				if (
+					(username == "") ||
+					(password == "")
+					)
+					return;
+			}
+			else if (htype == HTYPE_NestApi)
+			{
+				// we will store the thermostat ID / token in login / password
 				if (
 					(username == "") ||
 					(password == "")
