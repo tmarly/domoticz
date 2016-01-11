@@ -149,6 +149,7 @@ void MainWorkerLog(std::string str)
 MainWorker::MainWorker() :
 m_LastSunriseSet("")
 {
+		MainWorkerLog("mainworker - construct");
 	m_SecCountdown=-1;
 	m_stoprequested=false;
 	m_stopRxMessageThread = false;
