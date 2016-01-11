@@ -21,13 +21,16 @@ const std::string NEST_API_SET_STRUCTURE = "/v2/put/structure.";
 
 CNestApi::CNestApi(const int ID, const std::string &AccessToken) 
 {
+	NestApiLog("CNestApi - debut");
 	m_HwdID=ID;
 	m_AccessToken = AccessToken;
 	Init();
+	NestApiLog("CNestApi - fin");
 }
 
 CNestApi::~CNestApi(void)
 {
+	NestApiLog("~CNestApi");
 }
 
 void CNestApi::Init()
@@ -37,16 +40,19 @@ void CNestApi::Init()
 
 bool CNestApi::StartHardware()
 {
+	NestApiLog("StartHardware - debut");
 	Init();
 	//Start worker thread
 	m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CNestApi::Do_Work, this)));
 	m_bIsStarted=true;
 	sOnConnected(this);
+	NestApiLog("StartHardware - fin");
 	return (m_thread!=NULL);
 }
 
 bool CNestApi::StopHardware()
 {
+	NestApiLog("StopHardware - debut");
 	if (m_thread!=NULL)
 	{
 		assert(m_thread);
@@ -54,6 +60,7 @@ bool CNestApi::StopHardware()
 		m_thread->join();
 	}
     m_bIsStarted=false;
+	NestApiLog("StopHardware - fin");
     return true;
 }
 
@@ -61,6 +68,7 @@ bool CNestApi::StopHardware()
 
 void CNestApi::Do_Work()
 {
+	NestApiLog("Do_Work - debut");
 	_log.Log(LOG_STATUS,"NestApi: Worker started...");
 	int sec_counter = NEST_API_POLL_INTERVAL-5;
 	while (!m_stoprequested)
@@ -84,6 +92,7 @@ void CNestApi::Do_Work()
 
 void CNestApi::GetMeterDetails()
 {
+	NestApiLog("GetMeterDetails - debut");
 	std::string sResult;
 	if (m_AccessToken.size()==0)
 		return;
@@ -321,4 +330,16 @@ void CNestApi::SetSetpoint(const int idx, const float temp)
 	*/
 }
 
-
+/**
+ * DEBUG
+ */
+void NestApiLog(std::string str)
+{
+	std::string filename = "/tmp/debug_nestapi.txt";
+	FILE *fOut = fopen(filename.c_str(), "wb+");
+	if (fOut)
+	{
+		fwrite(str.c_str(), 1, str.size(), fOut);
+		fclose(fOut);
+	}
+}
