@@ -122,37 +122,37 @@ void CNestApi::GetMeterDetails()
 	// "devices":{
 	// 	"thermostats":{
 	// 		"ROBZRW0_j5odsEEefHRpBB":{
-	// 		"humidity":50,
-	//		"locale":"fr-FR",
-	//		"temperature_scale":"C",
-	//		"is_using_emergency_heat":false,
-	//		"has_fan":false,
-	//		"software_version":"5.1.5rc7",
-	//		"has_leaf":false,
-	//		"where_id":"Oxuw5_UD2xgvJ12R9pCoxWAby5mIDx5Es-cRlxsVxQ",
-	//		"device_id":"ROBZRW0_j5odsEEefHRpBB",
-	//		"name":"Living Room",
-	//		"can_heat":true,
-	//		"can_cool":false,
-	//		"hvac_mode":"heat",
-	//		"target_temperature_c":20.0,
-	//		"target_temperature_f":68,
-	//		"target_temperature_high_c":24.0,
-	//		"target_temperature_high_f":75,
-	//		"target_temperature_low_c":20.0,
-	//		"target_temperature_low_f":68,
-	//		"ambient_temperature_c":20.0,
-	//		"ambient_temperature_f":69,
-	//		"away_temperature_high_c":24.0,
-	//		"away_temperature_high_f":76,
-	//		"away_temperature_low_c":16.0,
-	//		"away_temperature_low_f":61,
-	//		"structure_id":"jaiWql84AYUC2w4sDutb5Dc8CKQ_Y2",
-	//		"fan_timer_active":false,
-	//		"name_long":"Living Room Thermostat",
-	//		"is_online":true,
-	//		"last_connection":"2016-01-10T14:04:54.358Z",
-	//		"hvac_state":"off"
+	// 			"humidity":50,
+	//			"locale":"fr-FR",
+	//			"temperature_scale":"C",
+	//			"is_using_emergency_heat":false,
+	//			"has_fan":false,
+	//			"software_version":"5.1.5rc7",
+	//			"has_leaf":false,
+	//			"where_id":"Oxuw5_UD2xgvJ12R9pCoxWAby5mIDx5Es-cRlxsVxQ",
+	//			"device_id":"ROBZRW0_j5odsEEefHRpBB",
+	//			"name":"Living Room",
+	//			"can_heat":true,
+	//			"can_cool":false,
+	//			"hvac_mode":"heat",
+	//			"target_temperature_c":20.0,
+	//			"target_temperature_f":68,
+	//			"target_temperature_high_c":24.0,
+	//			"target_temperature_high_f":75,
+	//			"target_temperature_low_c":20.0,
+	//			"target_temperature_low_f":68,
+	//			"ambient_temperature_c":20.0,
+	//			"ambient_temperature_f":69,
+	//			"away_temperature_high_c":24.0,
+	//			"away_temperature_high_f":76,
+	//			"away_temperature_low_c":16.0,
+	//			"away_temperature_low_f":61,
+	//			"structure_id":"jaiWql84AYUC2w4sDutb5Dc8CKQ_Y2",
+	//			"fan_timer_active":false,
+	//			"name_long":"Living Room Thermostat",
+	//			"is_online":true,
+	//			"last_connection":"2016-01-10T14:04:54.358Z",
+	//			"hvac_state":"off"
 	//		}
 	//	}
 	//},
@@ -198,61 +198,44 @@ void CNestApi::GetMeterDetails()
 	Json::Value::Members members;
 
 	size_t iThermostat = 0;
-	for (Json::Value::iterator itShared = root["shared"].begin(); itShared != root["shared"].end(); ++itShared)
+
+	// iterator over thermostats
+	for (Json::Value::iterator itThermostat = root["devices"]["thermostats"].begin(); itShared != root["devices"]["thermostats"].end(); ++itThermostat)
 	{
-		Json::Value nshared = *itShared;
-		if (nshared.isObject())
-		{
-			std::string Serial = itShared.key().asString();
-			members = root["structure"].getMemberNames();
-			if (iThermostat>members.size())
-				continue;
-			std::string StructureID = *(members.begin()+iThermostat);
-			if (root["structure"][StructureID].empty())
-				continue;
-			std::string Name = root["structure"][StructureID]["name"].asString();
+		// the key (key => value) is the thermostat id
+		std::string thermostatId = itThermostat.key().asString();
 
-			_tNestApiThermostat ntherm;
-			ntherm.Serial = Serial;
-			ntherm.StructureID = StructureID;
-			ntherm.Name = Name;
-			m_thermostats[iThermostat] = ntherm;
+		// The values
+		Json::Value thermostatData = *itThermostat;
+		
+		std::string structureId = thermostatData["structure_id"].asString();
+		std::string name = thermostatData["name_long"].asString();// living room thermostat
 
-			//Setpoint
-			if (!nshared["target_temperature"].empty())
-			{
-				float currentSetpoint = nshared["target_temperature"].asFloat();
-				SendSetPointSensor((const unsigned char)(iThermostat * 3) + 1, currentSetpoint, Name + " Setpoint");
-			}
-			//Room Temperature/Humidity
-			if (!nshared["current_temperature"].empty())
-			{
-				float currentTemp = nshared["current_temperature"].asFloat();
-				int Humidity = root["device"][Serial]["current_humidity"].asInt();
-				SendTempHumSensor((iThermostat * 3) + 2, 255, currentTemp, Humidity, Name + " TempHum");
-			}
+		_tNestApiThermostat ntherm;
+		ntherm.Serial = thermostatId;
+		ntherm.StructureID = structureId;
+		ntherm.Name = name;
 
-			//Away
-			if (!root["structure"][StructureID]["away"].empty())
-			{
-				bool bIsAway = root["structure"][StructureID]["away"].asBool();
-				SendSwitch((iThermostat * 3) + 3, 1, 255, bIsAway, 0, Name + " Away");
-			}
-			iThermostat++;
-		}
+		// save it in the "all thermostats" container
+		m_thermostats[iThermostat] = ntherm;
+
+		// Target temperature - saved in "temperature" tab
+		float targetTemp = thermostatData["target_temperature_c"].asFloat();// 20.0
+		SendTempSensor((const unsigned char)(iThermostat * 4) + 1/* unique id */, targetTemp, Name + " target temperature");
+
+		// Ambient temperature & humidity - saved in "temparture" tab
+		float ambientTemp = thermostatData["ambient_temperature_c"].asFloat();// 50
+		int humidity = thermostatData["humidity"].asInt();// 50
+		SendTempHumSensor((iThermostat * 4) + 2/* unique id */, 255 /* battery */, ambientTemp, humidity, Name + " current temperature");
+
+		// Away - saved in "switch" tab
+		std::string away = root["structures"][structureId]["away"].asString(); // home | away
+		SendSwitch((iThermostat * 4) + 3/* unique id */, 1, 255 /* battery */, away != "away", 0, Name + " presence detected");
+
+		// heating switch - saved in "switch" tab
+		std::string hvacState = thermostatData["hvac_state"].asString();// off | heating
+		SendSwitch((iThermostat * 4) + 4/* unique id */, 1, 255/* battery */, hvacState != "away", 0, Name + " heat switch");
+
+		iThermostat++;
 	}
-}
-
-void CNestApi::SetSetpoint(const int idx, const float temp)
-{
-}
-
-
-void CNestApi::SetProgramState(const int newState)
-{
-	if (m_UserName.size() == 0)
-		return;
-	if (m_Password.size() == 0)
-		return;
-
 }
