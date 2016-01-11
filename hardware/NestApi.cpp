@@ -93,10 +93,9 @@ bool CNestApi::WriteToHardware(const char *pdata, const unsigned char length)
 void CNestApi::GetMeterDetails()
 {
 	std::string sResult;
-	if (m_UserName.size()==0)
+	if (m_AccessToken.size()==0)
 		return;
-	if (m_Password.size()==0)
-		return;
+
 	std::vector<std::string> ExtraHeaders;
 
 	ExtraHeaders.push_back("Authorization: Bearer " + m_AccessToken);
@@ -186,12 +185,12 @@ void CNestApi::GetMeterDetails()
 	//}
 
 	if (!root["error"].empty()) {
-		_log.Log(LOG_ERROR, "NestApi: Error: " + root["error"].asString());
+		_log.Log(LOG_ERROR, ("NestApi: Error: " + root["error"].asString()).c_str());
 		return;
 	}
 
 	if (root["structures"].empty()) {
-		_log.Log(LOG_ERROR, "NestApi: Structures not found";
+		_log.Log(LOG_ERROR, "NestApi: Structures not found");
 		return;
 	}
 
