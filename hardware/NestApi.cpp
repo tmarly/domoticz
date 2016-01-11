@@ -272,3 +272,53 @@ void CNestApi::SetProgramState(const int newState)
 	}
 	*/
 }
+
+void CNestApi::SetSetpoint(const int idx, const float temp)
+{/*
+	if (m_UserName.size() == 0)
+		return;
+	if (m_Password.size() == 0)
+		return;
+
+	if (m_bDoLogin == true)
+	{
+		if (!Login())
+			return;
+	}
+	size_t iThermostat = (idx - 1) / 3;
+	if (iThermostat > m_thermostats.size())
+		return;
+
+	std::vector<std::string> ExtraHeaders;
+
+	ExtraHeaders.push_back("user-agent:Nest/1.1.0.10 CFNetwork/548.0.4");
+	ExtraHeaders.push_back("Authorization:Basic " + m_AccessToken);
+	ExtraHeaders.push_back("X-nl-protocol-version:1");
+
+	float tempDest = temp;
+	unsigned char tSign = m_sql.m_tempsign[0];
+	if (tSign == 'F')
+	{
+		//Maybe this should be done in the main app, so all other devices will also do this
+		//Convert to Celsius
+		tempDest = (tempDest - 32.0f) / 1.8f;
+	}
+
+	Json::Value root;
+	root["target_change_pending"] = true;
+	root["target_temperature"] = tempDest;
+
+	std::string sResult;
+
+	std::string sURL = m_TransportURL + NEST_SET_SHARED + m_thermostats[iThermostat].Serial;
+	if (!HTTPClient::POST(sURL, root.toStyledString(), ExtraHeaders, sResult))
+	{
+		_log.Log(LOG_ERROR, "Nest: Error setting setpoint!");
+		m_bDoLogin = true;
+		return;
+	}
+	GetMeterDetails();
+	*/
+}
+
+

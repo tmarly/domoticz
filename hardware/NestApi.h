@@ -18,6 +18,7 @@ public:
 	~CNestApi(void);
 	bool WriteToHardware(const char *pdata, const unsigned char length);
 	void SetProgramState(const int newState);
+	void SetSetpoint(const int idx, const float temp);
 	
 private:
 
