@@ -18,6 +18,20 @@ const std::string NEST_API_GET_STATUS = "/v2/mobile/user.";
 const std::string NEST_API_SET_SHARED = "/v2/put/shared.";
 const std::string NEST_API_SET_STRUCTURE = "/v2/put/structure.";
 
+/**
+ * DEBUG
+ */
+void NestApiLog(std::string str)
+{
+	std::string filename = "/tmp/debug_nestapi.txt";
+	FILE *fOut = fopen(filename.c_str(), "wb+");
+	if (fOut)
+	{
+		fwrite(str.c_str(), 1, str.size(), fOut);
+		fclose(fOut);
+	}
+}
+
 
 CNestApi::CNestApi(const int ID, const std::string &AccessToken) 
 {
@@ -330,16 +344,3 @@ void CNestApi::SetSetpoint(const int idx, const float temp)
 	*/
 }
 
-/**
- * DEBUG
- */
-void NestApiLog(std::string str)
-{
-	std::string filename = "/tmp/debug_nestapi.txt";
-	FILE *fOut = fopen(filename.c_str(), "wb+");
-	if (fOut)
-	{
-		fwrite(str.c_str(), 1, str.size(), fOut);
-		fclose(fOut);
-	}
-}
