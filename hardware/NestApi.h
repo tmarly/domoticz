@@ -19,6 +19,7 @@ public:
 
 private:
 
+	volatile bool m_stoprequested;
 	std::string m_AccessToken;
 	boost::shared_ptr<boost::thread> m_thread;
 	std::map<int, _tNestApiThermostat> m_thermostats;

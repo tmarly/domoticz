@@ -81,14 +81,6 @@ void CNestApi::Do_Work()
 	_log.Log(LOG_STATUS,"NestApi: Worker stopped...");
 }
 
-void CNestApi::SendSetPointSensor(const unsigned char Idx, const float Temp, const std::string &defaultname)
-{
-}
-
-bool CNestApi::WriteToHardware(const char *pdata, const unsigned char length)
-{
-}
-
 
 void CNestApi::GetMeterDetails()
 {
@@ -199,7 +191,7 @@ void CNestApi::GetMeterDetails()
 	size_t iThermostat = 0;
 
 	// iterator over thermostats
-	for (Json::Value::iterator itThermostat = root["devices"]["thermostats"].begin(); itShared != root["devices"]["thermostats"].end(); ++itThermostat)
+	for (Json::Value::iterator itThermostat = root["devices"]["thermostats"].begin(); itThermostat != root["devices"]["thermostats"].end(); ++itThermostat)
 	{
 		// the key (key => value) is the thermostat id
 		std::string thermostatId = itThermostat.key().asString();
@@ -220,7 +212,7 @@ void CNestApi::GetMeterDetails()
 
 		// Target temperature - saved in "temperature" tab
 		float targetTemp = thermostatData["target_temperature_c"].asFloat();// 20.0
-		SendTempSensor((const unsigned char)(iThermostat * 4) + 1/* unique id */, targetTemp, Name + " target temperature");
+		SendTempSensor((const unsigned char)(iThermostat * 4) + 1/* unique id */, 255 /* battery */, targetTemp, Name + " target temperature");
 
 		// Ambient temperature & humidity - saved in "temparture" tab
 		float ambientTemp = thermostatData["ambient_temperature_c"].asFloat();// 50
