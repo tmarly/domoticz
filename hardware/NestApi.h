@@ -16,7 +16,9 @@ class CNestApi : public CDomoticzHardwareBase
 public:
 	CNestApi(const int ID, const std::string &AccessToken);
 	~CNestApi(void);
-
+	bool WriteToHardware(const char *pdata, const unsigned char length);
+	void SetProgramState(const int newState);
+	
 private:
 
 	volatile bool m_stoprequested;

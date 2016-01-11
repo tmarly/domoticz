@@ -230,3 +230,45 @@ void CNestApi::GetMeterDetails()
 		iThermostat++;
 	}
 }
+
+bool CNestApi::WriteToHardware(const char *pdata, const unsigned char length)
+{
+	/*
+	if (m_UserName.size() == 0)
+		return false;
+	if (m_Password.size() == 0)
+		return false;
+
+	tRBUF *pCmd = (tRBUF *)pdata;
+	if (pCmd->LIGHTING2.packettype != pTypeLighting2)
+		return false; //later add RGB support, if someone can provide access
+
+	int node_id = pCmd->LIGHTING2.id4;
+
+	bool bIsOn = (pCmd->LIGHTING2.cmnd == light2_sOn);
+
+	if (node_id % 3 == 0)
+	{
+		//Away
+		return SetAway(node_id, bIsOn);
+	}
+	*/
+
+	return false;
+}
+
+void CNestApi::SetProgramState(const int newState)
+{
+	/*
+	if (m_UserName.size() == 0)
+		return;
+	if (m_Password.size() == 0)
+		return;
+
+	if (m_bDoLogin)
+	{
+		if (!Login())
+			return;
+	}
+	*/
+}
