@@ -135,7 +135,6 @@ namespace server {
 MainWorker::MainWorker() :
 m_LastSunriseSet("")
 {
-	_log.Log(LOG_NORM,"***** mainworker - construct");
 	m_SecCountdown=-1;
 	m_stoprequested=false;
 	m_stopRxMessageThread = false;
