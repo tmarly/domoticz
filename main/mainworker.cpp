@@ -132,24 +132,10 @@ namespace server {
 } //namespace server
 } //namespace tcp
 
-/**
- * DEBUG
- */
-void MainWorkerLog(std::string str)
-{
-	std::string filename = "/tmp/debug_nestapi.txt";
-	FILE *fOut = fopen(filename.c_str(), "wb+");
-	if (fOut)
-	{
-		fwrite(str.c_str(), 1, str.size(), fOut);
-		fclose(fOut);
-	}
-}
-
 MainWorker::MainWorker() :
 m_LastSunriseSet("")
 {
-		MainWorkerLog("mainworker - construct");
+	_log.Log(LOG_NORM,"***** mainworker - construct");
 	m_SecCountdown=-1;
 	m_stoprequested=false;
 	m_stopRxMessageThread = false;
@@ -835,7 +821,7 @@ bool MainWorker::AddHardwareFromParams(
 		pHardware = new CNest(ID, Username, Password);
 		break;
 	case HTYPE_NestApi:
-		MainWorkerLog("mainworker - AddHardwareFromParams");
+	_log.Log(LOG_NORM,"Hardware Monitor: Fetching data (System sensors)");
 		pHardware = new CNestApi(ID, Password);
 		break;
 	case HTYPE_ANNATHERMOSTAT:
@@ -10941,7 +10927,7 @@ bool MainWorker::SetSetPointInt(const std::vector<std::string> &sd, const float 
 		}
 		else if (pHardware->HwdType == HTYPE_NestApi)
 		{
-		MainWorkerLog("mainworker - SetSetPointInt");
+			_log.Log(LOG_NORM,"***** mainworker - SetSetPointInt");
 			CNestApi *pGateway = (CNestApi*)pHardware;
 			pGateway->SetSetpoint(ID4, TempValue);
 		}
@@ -11203,7 +11189,7 @@ bool MainWorker::SetThermostatState(const std::string &idx, const int newState)
 	}
 	else if (pHardware->HwdType == HTYPE_NestApi)
 	{
-		MainWorkerLog("mainworker - SetThermostatState");
+		_log.Log(LOG_NORM,"***** mainworker - SetThermostatState");
 		CNestApi *pGateway = (CNestApi*)pHardware;
 		pGateway->SetProgramState(newState);
 		return true;
