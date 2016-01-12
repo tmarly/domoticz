@@ -25,7 +25,7 @@ CNestApi::CNestApi(const int ID, const std::string &AccessToken)
 	m_AccessToken = AccessToken;
 	Init();
 	_log.Log(LOG_NORM,"***** CNestApi - fin");
-	
+}
 
 CNestApi::~CNestApi(void)
 {
