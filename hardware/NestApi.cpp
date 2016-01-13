@@ -220,12 +220,12 @@ void CNestApi::GetMeterDetails()
 
 		// Target temperature - saved in "temperature" tab
 		float targetTemp = thermostatData["target_temperature_c"].asFloat();// 20.0
-		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - TARGET TEMPERATURE  = "+std::to_string(targetTemp)).c_str());
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - TARGET TEMPERATURE  = "+boost::lexical_cast<std::string>(targetTemp)).c_str());
 		SendTempSensor((const unsigned char)(iThermostat * 4) + 1/* unique id */, 255 /* battery */, targetTemp, Name + " target temperature");
 
 		// Ambient temperature & humidity - saved in "temparture" tab
 		float ambientTemp = thermostatData["ambient_temperature_c"].asFloat();// 50
-		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - AMBIENT TEMPERATURE = "+std::to_string(ambientTemp)).c_str());
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - AMBIENT TEMPERATURE = "+boost::lexical_cast<std::string>(ambientTemp)).c_str());
 		int humidity = thermostatData["humidity"].asInt();// 50
 		SendTempHumSensor((iThermostat * 4) + 2/* unique id */, 255 /* battery */, ambientTemp, humidity, Name + " current temperature");
 
