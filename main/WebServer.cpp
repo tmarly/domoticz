@@ -947,6 +947,9 @@ namespace http {
 
 		void CWebServer::Cmd_AddHardware(WebEmSession & session, const request& req, Json::Value &root)
 		{
+
+			_log.Log(LOG_STATUS, "******** CWebServer::Cmd_AddHardware 1");
+
 			if (session.rights != 2)
 				return;//Only admin user allowed
 
@@ -959,6 +962,7 @@ namespace http {
 			std::string password = CURLEncode::URLDecode(request::findValue(&req, "password"));
 			std::string extra = CURLEncode::URLDecode(request::findValue(&req, "extra"));
 			std::string sdatatimeout = request::findValue(&req, "datatimeout");
+			_log.Log(LOG_STATUS, "******** CWebServer::Cmd_AddHardware 2");
 			if (
 				(name == "") ||
 				(senabled == "") ||
@@ -966,6 +970,7 @@ namespace http {
 				(sport == "")
 				) 
 				return;
+			_log.Log(LOG_STATUS, "******** CWebServer::Cmd_AddHardware 3");
 			_eHardwareTypes htype = (_eHardwareTypes)atoi(shtype.c_str());
 
 			int iDataTimeout = atoi(sdatatimeout.c_str());
@@ -1060,9 +1065,8 @@ namespace http {
 			}
 			else if (htype == HTYPE_NestApi)
 			{
-				// we will store the thermostat ID / token in login / password
+				// we will store  token in password
 				if (
-					(username == "") ||
 					(password == "")
 					)
 					return;
