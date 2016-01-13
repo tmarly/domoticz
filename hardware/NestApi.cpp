@@ -220,20 +220,24 @@ void CNestApi::GetMeterDetails()
 
 		// Target temperature - saved in "temperature" tab
 		float targetTemp = thermostatData["target_temperature_c"].asFloat();// 20.0
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - TARGET TEMPERATURE  = "+std::to_string(targetTemp)).c_str());
 		SendTempSensor((const unsigned char)(iThermostat * 4) + 1/* unique id */, 255 /* battery */, targetTemp, Name + " target temperature");
 
 		// Ambient temperature & humidity - saved in "temparture" tab
 		float ambientTemp = thermostatData["ambient_temperature_c"].asFloat();// 50
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - AMBIENT TEMPERATURE = "+std::to_string(ambientTemp)).c_str());
 		int humidity = thermostatData["humidity"].asInt();// 50
 		SendTempHumSensor((iThermostat * 4) + 2/* unique id */, 255 /* battery */, ambientTemp, humidity, Name + " current temperature");
 
 		// Away - saved in "switch" tab
 		std::string away = root["structures"][structureId]["away"].asString(); // home | away
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - AWAY                = "+away).c_str());
 		SendSwitch((iThermostat * 4) + 3/* unique id */, 1, 255 /* battery */, away != "away", 0, Name + " presence detected");
 
 		// heating switch - saved in "switch" tab
 		std::string hvacState = thermostatData["hvac_state"].asString();// off | heating
-		SendSwitch((iThermostat * 4) + 4/* unique id */, 1, 255/* battery */, hvacState != "away", 0, Name + " heat switch");
+		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - HVAC STATE          = "+hvacState).c_str());
+		SendSwitch((iThermostat * 4) + 4/* unique id */, 1, 255/* battery */, hvacState != "off", 0, Name + " heat switch");
 
 		iThermostat++;
 	}
