@@ -230,9 +230,9 @@ void CNestApi::GetMeterDetails()
 		SendTempHumSensor((iThermostat * 4) + 2/* unique id */, 255 /* battery */, ambientTemp, humidity, Name + " current temperature");
 
 		// Away - saved in "switch" tab
-		std::string away = root["structures"][structureId]["away"].asString(); // home | away
+		std::string away = root["structures"][structureId]["away"].asString(); // home | away | auto-away
 		_log.Log(LOG_NORM,("***** CNestApi::GetMeterDetails - AWAY                = "+away).c_str());
-		SendSwitch((iThermostat * 4) + 3/* unique id */, 1, 255 /* battery */, away != "away", 0, Name + " presence detected");
+		SendSwitch((iThermostat * 4) + 3/* unique id */, 1, 255 /* battery */, away != "away" && away != "auto-away", 0, Name + " presence detected");
 
 		// heating switch - saved in "switch" tab
 		std::string hvacState = thermostatData["hvac_state"].asString();// off | heating
